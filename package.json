@@ -1,0 +1,28 @@
+{
+  "name": "MINIMAL REPRO",
+  "version": "0.1.0",
+  "description": "MINIMAL REPRO OF TAURI SETSIZE PROBLEM",
+  "main": "./src/index.js",
+  "scripts": {
+    "tauri": "tauri",
+    "dev-server": "webpack serve --config ./build/config/dev/webpack.config.js",
+    "dev": "tauri dev",
+    "build-tauri": "tauri build",
+    "build": "npm run check && npm run build-tauri"
+  },
+  "type": "module",
+  "author": "PAVEL_POPOV",
+  "license": "ISC",
+  "dependencies": {
+    "@tauri-apps/api": "^1.2.0",
+    "mithril": "^2.2.2"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.2.3",
+    "html-webpack-plugin": "^5.5.0",
+    "webpack": "^5.77.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.13.2",
+    "webpack-strip-block": "^0.3.0"
+  }
+}
