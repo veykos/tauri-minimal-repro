@@ -24,6 +24,7 @@ export function AppShell() {
     let wantedH = 0;
     return {
         oncreate:async() => {
+
             const size = await appWindow?.innerSize();
             currentW = size?.width;
             currentH= size?.height;
@@ -43,9 +44,34 @@ export function AppShell() {
                     onclick: () => {
                         setTimeout(async() => {
                             try {
-                                wantedW = (Math.random() * 1_000) + 200;
-                                wantedH = (Math.random() * 1_000) + 200;
-                                await appWindow?.setSize(new LogicalSize(wantedW, wantedH));
+                                wantedW = Math.ceil((Math.random() * 1_000) + 200);
+                                wantedH = Math.ceil((Math.random() * 1_000) + 200);
+                                // get the scale factor
+                                const scaleFactor = await appWindow.scaleFactor();
+                                // create the wantedSize as LogicalSize
+                                const wantedSize = new LogicalSize(wantedW, wantedH)
+                                let currentSize = await appWindow.innerSize();
+                                // as we don't have LogicalSize.toPhysical() on the JS side we do the opposite 
+                                // we take the Physical size and convert it to logical using our scale
+                                let currentSizeLogical = currentSize.toLogical(scaleFactor)
+                                while (
+                                    currentSizeLogical.height !== wantedSize.height ||
+                                    currentSizeLogical.width !== wantedSize.width
+                                    ) {
+                                        console.log('attempting resize :)')
+                                        await appWindow?.setSize(wantedSize);
+                                        // we need to wait a bit before getting the innerSize again, otherwise it returns a PhysicalSize equal to the wantedSize
+                                        // even though the window is not resized properly
+                                        await new Promise(res => {
+                                            setTimeout(async() => {
+                                                currentSize = await appWindow.innerSize();
+                                                currentSizeLogical = currentSize.toLogical(scaleFactor) 
+                                                res()
+                                            }, 300);
+                                        })
+                                        console.log('finish attempt')
+                                }
+                                // get the current size
                                 const size = await new Promise(res => {
                                     setTimeout(async() => {
                                         const size = await appWindow?.innerSize();
